@@ -11,7 +11,7 @@ const withNextra = nextra({
 export default withNextra({
   reactStrictMode: true,
   turbopack: {
-    root: "/Users/thomas/minecraft/docs.oraxen.com",
+    root: process.cwd(),
     resolveAlias: {
       "next-mdx-import-source-file": "./next-mdx-import-source-file.ts",
     },

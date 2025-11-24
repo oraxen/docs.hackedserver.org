@@ -1,10 +1,6 @@
 export default {
-  index: "Getting started",
-  faq: "Frequently Asked Questions",
-  usage: "Usage",
-  configuration: "Configuration",
-  mechanics: "Mechanics",
+  index: "Getting Started",
+  "commands-and-permissions": "Commands & Permissions",
   compatibility: "Compatibility",
-  vendors: "Vendors",
-  developers: "Developers",
-};
+  "add-your-own-checks": "Add your own checks"
+}

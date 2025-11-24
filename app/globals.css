@@ -1,0 +1,8 @@
+/* Global styles */
+
+/* Force pixelated rendering for all images (Minecraft style) */
+img {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}

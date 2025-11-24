@@ -1,60 +1,37 @@
 ---
-description: How to install and setup Oraxen on Paper or Spigot
-icon: play
-cover: https://images.polymart.org/resource/629/default.jpg
-coverY: 0
-layout:
-  cover:
-    visible: true
-    size: full
-  title:
-    visible: true
-  description:
-    visible: true
-  tableOfContents:
-    visible: true
-  outline:
-    visible: true
-  pagination:
-    visible: true
+description: How to install and setup HackedServer on Spigot and Bungeecord?
 ---
 
-# Welcome to Oraxen docs
+import { Callout } from 'nextra/components'
 
-*Looking for the old documentation? Visit the [legacy GitBook site](http://oraxen.gitbook.io/).*
+# Getting started
 
-## What Is Oraxen?
+## Installing HackedServer on Spigot
 
-Oraxen is a Minecraft plugin which allows the creation of new items & blocks using custom textures and models. It also handles resourcepack generation, upload and storage (using Polymath), and is entirely open source with an extensible API.
+### For 1.17 and superior
 
-## How Does It All Work?
+First drop HackedServer.jar, [HackedCore.jar](https://www.spigotmc.org/resources/hackedcore-hackedserver-library.68979/) and [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) to your `/plugins/` folder and restart your server.
 
-When a Spigot server starts with Oraxen installed, the plugin will read all the item configurations (your .yml files inside /plugins/oraxen/items) and use them to generate .json models that link your .png textures to your new items. After this, Oraxen zips the resources using an optimized algorithm and uploads it to a polymath instance. Polymath is a free and opensource software written in Python to host Minecraft resourcepacks. By default Oraxen will use an Oraxen supplied Polymath instance, hosted in Switzerland on an oracle virtual private server. Whenever a player connects to your server, Oraxen will link them to the polymath instance which then sends them the resourcepack.
+### For older versions
 
-## Install Oraxen In Seconds!
+First drop HackedServer.jar, [HackedCore.jar](https://www.spigotmc.org/resources/hackedcore-hackedserver-library.68979/) to your `/plugins/` folder and restart your server. You need to use the version 2.80.0 of HackedServer which can be downloaded [here](https://www.spigotmc.org/resources/%E2%80%8D%E2%9C%85-25-%E2%98%A0%EF%B8%8F-hackedserver-mods-clients-detector.46485/download?version=401048).
 
-Installing Oraxen is a fairly straight forward process:&#x20;
+<Callout type="info">
+ HackedServer has been tested with Spigot, CraftBukkit, PaperSpigot, TacoSpigot and Akarin
+</Callout>
 
-### Required Dependencies
+If all goes well you should get something like this :
 
-1. **CommandAPI** - Download the version-specific CommandAPI for your server:
-   - For **Spigot**: Download from [CommandAPI releases](https://github.com/JorelAli/CommandAPI/releases)
-   - For **Paper**: Download from [CommandAPI releases](https://github.com/JorelAli/CommandAPI/releases) (Paper version)
-   - For more details, see the [CommandAPI installation guide](https://docs.commandapi.dev/user-setup/install)
+![Logs](/assets/logs.png)
 
-2. Drop the Oraxen and CommandAPI .jar files into your `/plugins/` folder.
+### Installing HackedServer on Bungeecord
 
-### Optional Dependencies
+Start by installing HackedServer on every spigot servers as explained previously. Be sure that `bungeecord` is set to true in your `spigot.yml` configurations and `ip_forward` enabled in your bungeecord `config.yml`.
 
-* **[ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)** - Recommended but not mandatory.
+Then drop HackedServer.jar (it's the same jar as for spigot) to your bungeecord `/plugins/` folder and restart it. There should be only a simple log saying that the plugin is well loaded since its main feature is fixing bungee incompatibility (it also brings some debug features):
 
-3. Restart your server.
+![Bungee Logs](/assets/logs_bungee.png)
 
-That's it! Although, we highly recommend heading into your settings.yml config and making any desired adjustments (then restarting once more) before continuing!
-
-
-Oraxen has been tested with Spigot and Paper 1.18 -> 1.21.4
-
-
-For Minecraft 1.21.2+, using the latest version of Oraxen is advised. Oraxen is developed and designed for use with the [Paper](https://papermc.io/downloads/paper) server software. For older Minecraft versions, start by installing Oraxen 1.183.0 to get compatible configuration files. You can then update the jar file accordingly.
-
+<Callout type="info">
+If you are using a proxy like waterfall or travertine, set `forge_support: false` in `config.yml`
+</Callout>

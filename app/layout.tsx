@@ -4,20 +4,20 @@ import { Layout, Navbar } from "nextra-theme-docs";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import "nextra-theme-docs/style.css";
-import "./external-link.css";
+import "./globals.css";
 
 // Custom logo wrapper that opens external links in new tab
 function LogoWithExternalIcon() {
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
       <img
-        src="/logo_lowres.png"
-        width={26}
-        height={26}
-        alt="Logo"
-        style={{ imageRendering: "pixelated" }}
+        style={{ marginTop: -7 }}
+        src="/favicon.png"
+        width={32}
+        height={32}
+        alt="HackedServer"
       />
-      <span style={{ opacity: "60%" }}>Get Oraxen</span>
+      <span style={{ opacity: "60%" }}>Get HackedServer</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
@@ -37,18 +37,21 @@ function LogoWithExternalIcon() {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://docs.oraxen.com"),
-  title: "Oraxen Docs",
-  description: "Oraxen: Create custom items & blocks for Minecraft",
-  applicationName: "Oraxen Docs",
+  metadataBase: new URL("https://docs.hackedserver.org"),
+  title: {
+    template: "%s - HackedServer",
+    default: "HackedServer Docs",
+  },
+  description: "HackedServer: Forge Mods & Clients Detector",
+  applicationName: "HackedServer Docs",
   generator: "Next.js",
   appleWebApp: {
-    title: "Oraxen Docs",
+    title: "HackedServer Docs",
   },
   twitter: {
-    site: "https://docs.oraxen.com",
+    site: "https://docs.hackedserver.org",
   },
-  icons: "/favicon.ico",
+  icons: "/favicon.png",
 };
 
 export default async function RootLayout({
@@ -59,9 +62,8 @@ export default async function RootLayout({
   const navbar = (
     <Navbar
       logo={<LogoWithExternalIcon />}
-      logoLink="https://oraxen.com"
-      projectLink="https://git.io/oraxen"
-      chatLink="https://discord.gg/2ng6q3JNQ7"
+      logoLink="https://hackedserver.org"
+      projectLink="https://github.com/HackedServer/docs"
     />
   );
   const pageMap = await getPageMap();
@@ -80,7 +82,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               document.addEventListener('DOMContentLoaded', function() {
-                const logoLink = document.querySelector('nav a[href="https://oraxen.com"]');
+                const logoLink = document.querySelector('nav a[href="https://hackedserver.org"]');
                 if (logoLink) {
                   logoLink.setAttribute('target', '_blank');
                   logoLink.setAttribute('rel', 'noopener noreferrer');
@@ -92,11 +94,9 @@ export default async function RootLayout({
       </Head>
       <body>
         <Layout
-          //banner={<Banner storageKey="Nextra 2">Nextra 2 Alpha</Banner>}
           navbar={navbar}
-          //footer={<Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>}
           editLink="Edit this page on GitHub"
-          docsRepositoryBase="https://github.com/shuding/nextra/blob/main/examples/docs"
+          docsRepositoryBase="https://github.com/HackedServer/docs"
           sidebar={{ defaultMenuCollapseLevel: 1 }}
           pageMap={normalizedPageMap as any}
         >

@@ -1,37 +1,102 @@
 ---
-description: How to install and setup HackedServer on Spigot and Bungeecord?
+description: How to install and setup HackedServer on Spigot, BungeeCord, and Velocity
 ---
 
-import { Callout } from 'nextra/components'
+import { Callout, Tabs } from 'nextra/components'
 
 # Getting started
 
-## Installing HackedServer on Spigot
+HackedServer is a multi-platform Minecraft plugin that detects Forge mods, Fabric mods, hacked clients, and other modified clients. It alerts your staff and can automatically punish cheaters.
 
-### For 1.17 and superior
+## Requirements
 
-First drop HackedServer.jar, [HackedCore.jar](https://www.spigotmc.org/resources/hackedcore-hackedserver-library.68979/) and [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) to your `/plugins/` folder and restart your server.
-
-### For older versions
-
-First drop HackedServer.jar, [HackedCore.jar](https://www.spigotmc.org/resources/hackedcore-hackedserver-library.68979/) to your `/plugins/` folder and restart your server. You need to use the version 2.80.0 of HackedServer which can be downloaded [here](https://www.spigotmc.org/resources/%E2%80%8D%E2%9C%85-25-%E2%98%A0%EF%B8%8F-hackedserver-mods-clients-detector.46485/download?version=401048).
+- **Minecraft Server**: 1.18 or newer
+- **Java**: 17 or newer
+- **ProtocolLib**: Required for Spigot/Paper servers
+- **PacketEvents**: Required for Velocity proxy
 
 <Callout type="info">
- HackedServer has been tested with Spigot, CraftBukkit, PaperSpigot, TacoSpigot and Akarin
+HackedServer 3.x is a complete rewrite with simplified installation — no external dependencies like HackedCore are required anymore.
 </Callout>
 
-If all goes well you should get something like this :
+## Installation
+
+<Tabs items={['Spigot/Paper', 'BungeeCord', 'Velocity']}>
+<Tabs.Tab>
+
+### Installing on Spigot/Paper
+
+1. Download and install [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) to your `/plugins/` folder
+2. Download `HackedServer.jar` and place it in your `/plugins/` folder
+3. Restart your server
+
+<Callout type="info">
+HackedServer has been tested with Spigot, CraftBukkit, PaperMC, Purpur, and other popular forks.
+</Callout>
+
+If all goes well, you should see something like this in your console:
 
 ![Logs](/assets/logs.png)
 
-### Installing HackedServer on Bungeecord
+</Tabs.Tab>
+<Tabs.Tab>
 
-Start by installing HackedServer on every spigot servers as explained previously. Be sure that `bungeecord` is set to true in your `spigot.yml` configurations and `ip_forward` enabled in your bungeecord `config.yml`.
+### Installing on BungeeCord
 
-Then drop HackedServer.jar (it's the same jar as for spigot) to your bungeecord `/plugins/` folder and restart it. There should be only a simple log saying that the plugin is well loaded since its main feature is fixing bungee incompatibility (it also brings some debug features):
+Start by installing HackedServer on every Spigot server as explained in the Spigot/Paper tab.
+
+Make sure that:
+- `bungeecord` is set to `true` in your `spigot.yml` on each backend server
+- `ip_forward` is enabled in your BungeeCord `config.yml`
+
+Then:
+1. Download `HackedServer.jar` (same JAR as for Spigot)
+2. Place it in your BungeeCord `/plugins/` folder
+3. Restart your proxy
 
 ![Bungee Logs](/assets/logs_bungee.png)
 
-<Callout type="info">
-If you are using a proxy like waterfall or travertine, set `forge_support: false` in `config.yml`
+<Callout type="warning">
+If you are using a fork like Waterfall or Travertine, you may need to adjust configuration settings for optimal compatibility.
 </Callout>
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+### Installing on Velocity
+
+HackedServer supports Velocity proxy for detecting modified clients across your network.
+
+**Requirements:**
+- [PacketEvents](https://github.com/retrooper/packetevents) installed on your Velocity proxy
+
+**Installation:**
+1. Install PacketEvents on your Velocity proxy
+2. Download `HackedServer.jar` and place it in your Velocity `/plugins/` folder
+3. Restart your proxy
+
+<Callout type="info">
+Velocity provides modern proxy features with better performance. HackedServer fully supports Velocity's API for seamless integration.
+</Callout>
+
+</Tabs.Tab>
+</Tabs>
+
+## Configuration Files
+
+After the first run, HackedServer will generate configuration files in the plugin folder:
+
+| File | Description |
+|------|-------------|
+| `config.toml` | Main settings (language, debug mode) |
+| `actions.toml` | Define actions triggered by detections |
+| `generic.toml` | Configure client/mod detection rules |
+| `languages/english.toml` | Message translations |
+
+See the [Configuration](/configuration) page for detailed documentation.
+
+## Quick Start
+
+Once installed, HackedServer will automatically start detecting modified clients. Staff with the `hackedserver.alert` permission will receive alerts when players join with detected mods or clients.
+
+Use `/hs help` to see available commands, or check the [Commands & Permissions](/commands-and-permissions) page for details.

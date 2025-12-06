@@ -1,69 +1,243 @@
 ---
-description: How to use the "Others" section from the settings to add your own checks
+description: How to add custom client and mod detection checks
 ---
 
 import { Callout } from 'nextra/components'
 
-# Add your own checks
+# Add Your Own Checks
 
-## How does the section work?
+HackedServer's detection system is fully configurable through the `generic.toml` file. You can add custom checks to detect any client or mod that sends plugin messages.
 
-```yaml
-  # Example configuration of the listener for an example client/version/mod
+## Understanding Plugin Messages
 
-  #The name of the configuration section (you can use what you want, it is not important)
-  ExampleSectionName:
+Minecraft clients communicate with servers through plugin message channels. Modified clients and mods often register custom channels or send specific data through standard channels. HackedServer intercepts these messages to detect what clients are being used.
 
-    #The channel name sent by the client that HackedServer will intercept
-    Channel: "EXAMPLE CHANNEL"
+## Check Structure
 
-    #The name of the subsection (because you can detect differents clients/mods/versions on the same channel)
-    ExampleSubSectionName:
+Each check in `generic.toml` follows this structure:
 
-      #It is a condition : if the message sent by the client contains this text, HackedServer will read the rest of this subsection
-      Contains: "I'm using ExampleClient"
-
-      #The client name that HackedServer will display in its messages
-      ClientName: "ExampleClient"
-
-      #Actions to do when a player join with this client/mod/version
-      Actions:
-
-        #Enabled Placeholders in Commands and AlertMessage : %p%, %version%, %message%
-
-        #Commands you want to be performed by the Console
-        ConsoleCommands:
-          - "kill %p%"
-
-        #Commands you want to be performed by the player (as an op)
-        OppedPlayerCommands: []
-
-        #Enable alerts for players who have permission hackedserver.alert
-        Alert: true
-
-        #Alert message to send if enabled
-        AlertMessage: "&c %p% &7sent the plugin message \"&c%message%&7\" using the version &c%version%"
+```toml
+[check_id]
+name = "Display Name"
+channels = ["channel1", "minecraft:channel2"]
+message_has = "optional_filter"
+actions = ["alert"]
 ```
 
-## Example section: Rift
+### Properties Explained
 
-```yaml
-  McBrandChannel:
-    Channels:
-      - "MC|Brand"
-      - "minecraft:brand"
+| Property | Required | Description |
+|----------|----------|-------------|
+| `check_id` | Yes | Unique identifier (use snake_case) |
+| `name` | Yes | Name displayed in alerts and commands |
+| `channels` | Yes | List of plugin message channels to monitor |
+| `message_has` | No | Only trigger if message contains this text (case-insensitive) |
+| `actions` | Yes | List of action IDs from `actions.toml` to execute |
 
-    Rift:
-      ClientName: "Rift"
-      Contains: "rift"
-      Actions:
-        ConsoleCommands: []
-        OppedPlayerCommands: []
-        Alert: true
-        AlertMessage: "&c %p% &7just logged in using \"&c%version%&7\" !"
+## Example: Detecting a Custom Client
+
+Let's say you want to detect a hypothetical client called "ExampleClient" that sends messages on the channel `example:main`:
+
+```toml
+[example_client]
+name = "ExampleClient"
+channels = ["example:main"]
+actions = ["alert"]
+```
+
+### With Message Filtering
+
+If the client sends multiple message types on the same channel, you can filter by content:
+
+```toml
+[example_client]
+name = "ExampleClient"
+channels = ["example:main"]
+message_has = "client_hello"
+actions = ["alert"]
+```
+
+## Example: Detecting via MC|Brand
+
+Many clients identify themselves through the `MC|Brand` or `minecraft:brand` channel. Here's how to detect a client by its brand string:
+
+```toml
+[custom_brand_client]
+name = "Custom Client"
+channels = ["MC|Brand", "minecraft:brand"]
+message_has = "customclient"
+actions = ["alert"]
 ```
 
 <Callout type="info">
- You can also read [this little article](https://medium.com/@th0rgal/how-to-detect-the-undetectable-hacked-client-aristois-ad14562e357e?source=friends_link&sk=2221d97e86189e372bd92c8a742cf477) on medium that explains my approach with examples
+The `message_has` filter is case-insensitive. "customclient" will match "CustomClient", "CUSTOMCLIENT", etc.
 </Callout>
 
+## Detecting Mods via REGISTER Channel
+
+Mods often announce their presence by registering channels. You can detect this:
+
+```toml
+[custom_mod]
+name = "Custom Mod"
+channels = ["REGISTER", "minecraft:register"]
+message_has = "custommod"
+actions = ["alert"]
+```
+
+## Creating Custom Actions
+
+Before referencing an action, define it in `actions.toml`:
+
+```toml
+# Silent logging - just alert staff
+[silent_log]
+send_alert = "<gray>[LOG] <yellow><player> <gray>is using <yellow><name>"
+[silent_log.commands]
+console = []
+player = []
+opped_player = []
+
+# Kick the player
+[kick]
+send_alert = "<red><player> <gray>was kicked for using <red><name>"
+[kick.commands]
+console = ["kick <player> This client/mod is not allowed!"]
+player = []
+opped_player = []
+
+# Ban the player
+[ban]
+send_alert = "<dark_red><player> <gray>was banned for using <dark_red><name>"
+[ban.commands]
+console = ["ban <player> Using forbidden modifications"]
+player = []
+opped_player = []
+```
+
+Then reference these actions in your checks:
+
+```toml
+[whitelisted_mod]
+name = "Allowed Mod"
+channels = ["allowed:channel"]
+actions = ["silent_log"]
+
+[blacklisted_client]
+name = "Hacked Client"
+channels = ["hacked:channel"]
+actions = ["kick", "silent_log"]
+```
+
+## Finding Channels with Debug Mode
+
+To discover what channels a client uses:
+
+1. Enable debug mode in `config.toml`:
+
+```toml
+[settings]
+debug = true
+```
+
+2. Reload the plugin: `/hs reload`
+
+3. Have a player join with the client you want to detect
+
+4. Check the console for debug messages showing all plugin messages:
+
+```
+HS-Debug | PlayerName channel: "example:channel", message: "example_data"
+```
+
+5. Use this information to create your check
+
+<Callout type="warning">
+Remember to disable debug mode in production! It generates a lot of console output.
+</Callout>
+
+## Multiple Channels Per Check
+
+A single check can monitor multiple channels. The check triggers if a message is received on ANY of the listed channels:
+
+```toml
+[multi_channel_mod]
+name = "Multi-Channel Mod"
+channels = [
+    "mod:channel1",
+    "mod:channel2",
+    "mod:legacy"
+]
+actions = ["alert"]
+```
+
+## Multiple Actions Per Check
+
+Checks can trigger multiple actions simultaneously:
+
+```toml
+[dangerous_client]
+name = "Dangerous Client"
+channels = ["danger:main"]
+actions = ["alert", "kick", "log_to_discord"]
+```
+
+This will execute all listed actions when the client is detected.
+
+## Complete Example
+
+Here's a complete example adding detection for a fictional mod ecosystem:
+
+**actions.toml:**
+```toml
+[modpack_alert]
+send_alert = "<green><player> <gray>joined with approved modpack: <green><name>"
+[modpack_alert.commands]
+console = []
+player = []
+opped_player = []
+
+[unapproved_mod]
+send_alert = "<red><player> <gray>has unapproved mod: <red><name>"
+[unapproved_mod.commands]
+console = ["kick <player> Please remove unapproved mods"]
+player = []
+opped_player = []
+```
+
+**generic.toml:**
+```toml
+enabled = true
+
+# Approved mods
+[approved_modpack]
+name = "Server Modpack"
+channels = ["modpack:verify"]
+message_has = "approved_v2"
+actions = ["modpack_alert"]
+
+# Unapproved mods
+[cheat_mod_x]
+name = "CheatMod X"
+channels = ["MC|Brand", "minecraft:brand"]
+message_has = "cheatmod"
+actions = ["unapproved_mod"]
+
+[exploit_mod]
+name = "Exploit Mod"
+channels = ["exploit:main", "REGISTER"]
+message_has = "exploitmod"
+actions = ["unapproved_mod"]
+```
+
+## Tips for Writing Checks
+
+1. **Use specific channel names** when possible for accurate detection
+2. **Use `message_has` filters** to avoid false positives on shared channels
+3. **Test with debug mode** to verify your checks work correctly
+4. **Start with `alert` action** before adding punishment actions
+5. **Document your custom checks** with comments in the TOML file
+
+<Callout type="info">
+For more detailed examples and community-contributed checks, check the [HackedServer GitHub repository](https://github.com/Th0rgal/HackedServer).
+</Callout>

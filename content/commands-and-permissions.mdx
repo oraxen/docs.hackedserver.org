@@ -2,43 +2,77 @@
 description: An exhaustive list of the commands and their permissions
 ---
 
-import { Callout } from 'nextra/components'
+import { Callout, Tabs } from 'nextra/components'
 
-# Commands and permissions
+# Commands and Permissions
 
-**/hackedserver** » Main command (alias: `/hs`)
-`Permission: hackedserver.knowexistence`
+## Commands
 
-**/hs help** » Show help
-`Permission : hackedserver.help`
+HackedServer provides a simple command interface available on all platforms. The main command is `/hackedserver` with the alias `/hs`.
 
-**/hs list** » List all non vanilla users
-`Permission : hackedserver.list`
+### Available Commands
 
-**/hs check &lt;Player&gt;** » Show player's versions
-`Permission : hackedserver.check`
-
-**/hs inv** » Open HackedServer's inventory
-`Permission : hackedserver.inv`
-
-**/hs forge list** » List all forge's users
-`Permission : hackedserver.forge.list`
-
-**/hs forge check &lt;Player&gt;** » Show player's mods (forge)
-`Permission : hackedserver.forge.check`
-
-**/hs forge inv** » Open HackedServer's forge inventory
-`Permission : hackedserver.forge.inv`
-
-**/hs reload** »
-`Permission : hackedserver.reload`
-
-**Receive alerts** »
-`Permission : hackedserver.alert`
-
-**Bypass** »
-`Permission : hackedserver.bypass`
+| Command | Description | Permission |
+|---------|-------------|------------|
+| `/hs` | Show help menu | `hackedserver.command` |
+| `/hs help` | Show available commands | `hackedserver.command` |
+| `/hs reload` | Reload all configuration files | `hackedserver.command.reload` |
+| `/hs check <player>` | Check detected mods for a player | `hackedserver.command.check` |
+| `/hs list` | List all players with detected mods | `hackedserver.command.list` |
+| `/hs inv` | Open the HackedServer inventory GUI | `hackedserver.command.inv` |
 
 <Callout type="info">
-**hackedserver.knowexistence** permission is needed for every commands
+The `/hs inv` command is only available on Spigot/Paper servers, not on BungeeCord or Velocity proxies.
 </Callout>
+
+## Permissions
+
+### Command Permissions
+
+| Permission | Description |
+|------------|-------------|
+| `hackedserver.command` | Access to the base `/hs` command |
+| `hackedserver.command.reload` | Permission to reload configuration |
+| `hackedserver.command.check` | Permission to check player mods |
+| `hackedserver.command.list` | Permission to list flagged players |
+| `hackedserver.command.inv` | Permission to open the GUI inventory |
+
+### Alert Permission
+
+| Permission | Description |
+|------------|-------------|
+| `hackedserver.alert` | Receive alerts when modified clients are detected |
+
+Staff members with the `hackedserver.alert` permission will receive in-game notifications when HackedServer detects a player using a modified client, forge mod, fabric mod, or hacked client.
+
+## Platform Differences
+
+<Tabs items={['Spigot/Paper', 'BungeeCord', 'Velocity']}>
+<Tabs.Tab>
+
+On Spigot and Paper servers, all commands are available including the inventory GUI (`/hs inv`).
+
+Commands use the modern CommandAPI for tab completion and argument suggestions.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+On BungeeCord, the following commands are available:
+- `/hs reload`
+- `/hs check <player>`
+- `/hs list`
+
+The inventory GUI is not available on proxy servers.
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+On Velocity, the following commands are available:
+- `/hs reload`
+- `/hs check <player>`
+- `/hs list`
+
+Commands use Brigadier for tab completion and argument suggestions.
+
+</Tabs.Tab>
+</Tabs>

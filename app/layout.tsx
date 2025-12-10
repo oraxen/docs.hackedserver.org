@@ -11,11 +11,11 @@ function LogoWithExternalIcon() {
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
       <img
-        style={{ marginTop: -7 }}
-        src="/favicon.png"
-        width={32}
-        height={32}
+        src="/logo_lowres.png"
+        width={27}
+        height={24}
         alt="HackedServer"
+        style={{ imageRendering: "pixelated" }}
       />
       <span style={{ opacity: "60%" }}>Get HackedServer</span>
       <svg
@@ -42,16 +42,45 @@ export const metadata: Metadata = {
     template: "%s - HackedServer",
     default: "HackedServer Docs",
   },
-  description: "HackedServer: Forge Mods & Clients Detector",
+  description: "HackedServer: Forge Mods & Clients Detector for Minecraft servers",
   applicationName: "HackedServer Docs",
   generator: "Next.js",
+  manifest: "/manifest.json",
   appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
     title: "HackedServer Docs",
   },
-  twitter: {
-    site: "https://docs.hackedserver.org",
+  formatDetection: {
+    telephone: false,
   },
-  icons: "/favicon.png",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "HackedServer Docs",
+    title: "HackedServer Docs",
+    description: "HackedServer: Forge Mods & Clients Detector for Minecraft servers",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "https://docs.hackedserver.org",
+    title: "HackedServer Docs",
+    description: "HackedServer: Forge Mods & Clients Detector for Minecraft servers",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 64x64 128x128 256x256 512x512" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default async function RootLayout({
@@ -78,6 +107,14 @@ export default async function RootLayout({
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head>
+        {/* Theme color for browser chrome - matches brand blue */}
+        <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        {/* Optimal viewport for PWA */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        {/* Preconnect to external resources for faster loading */}
+        <link rel="preconnect" href="https://cdn.discordapp.com" />
+        <link rel="dns-prefetch" href="https://cdn.discordapp.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

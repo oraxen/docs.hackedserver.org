@@ -29,6 +29,12 @@ debug = false
 
 # If the same payload is sent twice, only the first triggers a check
 skip_duplicates = false
+
+# Automatically download required dependencies (like ProtocolLib) if not present
+auto_download_dependencies = true
+
+# Delay in ticks before executing actions after a check is triggered
+action_delay_ticks = 20
 ```
 
 ### Settings
@@ -38,9 +44,15 @@ skip_duplicates = false
 | `language` | string | `"english"` | Language file to use (without `.toml` extension) |
 | `debug` | boolean | `false` | Log all custom payload packets for debugging |
 | `skip_duplicates` | boolean | `false` | Skip duplicate payload messages from same player |
+| `auto_download_dependencies` | boolean | `true` | Automatically download ProtocolLib if not installed |
+| `action_delay_ticks` | integer | `20` | Delay in ticks before executing actions (helps with Purpur compatibility) |
 
 <Callout type="info">
 Enable `debug` mode to see all incoming custom payload packets in the console. This is helpful when adding custom checks.
+</Callout>
+
+<Callout type="info">
+If you prefer to manage ProtocolLib manually, set `auto_download_dependencies` to `false`. The `action_delay_ticks` setting ensures players are fully connected before kicks or commands execute, which resolves issues on some server forks like Purpur.
 </Callout>
 
 ## Actions Configuration (actions.toml)

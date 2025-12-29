@@ -17,13 +17,34 @@ HackedServer provides a simple command interface available on all platforms. The
 | `/hs` | Show help menu | `hackedserver.command` |
 | `/hs help` | Show available commands | `hackedserver.command` |
 | `/hs reload` | Reload all configuration files | `hackedserver.command.reload` |
-| `/hs check <player>` | Check detected mods for a player | `hackedserver.command.check` |
+| `/hs check <player>` | Check detected clients and mods for a player | `hackedserver.command.check` |
 | `/hs list` | List all players with detected mods | `hackedserver.command.list` |
 | `/hs inv` | Open the HackedServer inventory GUI | `hackedserver.command.inv` |
 
 <Callout type="info">
 The `/hs inv` command is only available on Spigot/Paper servers, not on BungeeCord or Velocity proxies.
 </Callout>
+
+### Enhanced /hs check Command
+
+The `/hs check` command displays all detected clients and mods for a player. With the Lunar Client integration (3.12.1+), this command now shows detailed mod information:
+
+```
+/hs check PlayerName
+
+Detected mods:
+- Lunar Client
+- sodium (v0.5.3) [fabric]
+- iris (v1.6.4) [fabric]
+- litematica (v0.12.0) [fabric]
+```
+
+For Lunar Client players, you'll see:
+- The Lunar Client detection itself
+- Each installed mod with its version number
+- The mod type (fabric, forge, or built-in Lunar mod)
+
+For Forge players, you'll see the full mod list retrieved via handshake emulation.
 
 ## Permissions
 

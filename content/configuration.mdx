@@ -15,6 +15,7 @@ HackedServer uses TOML configuration files for all settings. After the first lau
 | `config.toml` | Main plugin settings |
 | `actions.toml` | Define what happens when clients are detected |
 | `generic.toml` | Configure client/mod detection rules |
+| `lunar.toml` | Lunar Client Apollo integration settings |
 | `languages/english.toml` | Customizable messages |
 
 ## Main Configuration (config.toml)
@@ -183,6 +184,43 @@ HackedServer comes with detection for many popular clients and mods:
 
 </Tabs.Tab>
 </Tabs>
+
+## Lunar Client Integration (lunar.toml)
+
+HackedServer 3.12.1 introduces deep Lunar Client integration via the Apollo protocol. This enables detection of all mods installed through Lunar Client, including their versions and types.
+
+```toml
+# Mark players using Lunar Client
+mark_lunar_client = true
+
+# Mark players using Fabric mods via Lunar
+mark_fabric = true
+
+# Mark players using Forge mods via Lunar
+mark_forge = true
+
+# Actions to execute when Lunar Client is first detected
+actions = ["alert"]
+
+# Per-mod actions - configure specific actions for individual mods
+[mod_actions]
+# "sodium" = ["alert"]
+# "litematica" = ["kick"]
+```
+
+### Lunar Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `mark_lunar_client` | boolean | `true` | Track Lunar Client usage |
+| `mark_fabric` | boolean | `true` | Track Fabric mods loaded via Lunar |
+| `mark_forge` | boolean | `true` | Track Forge mods loaded via Lunar |
+| `actions` | array | `["alert"]` | Actions triggered on Lunar detection |
+| `mod_actions` | table | `{}` | Per-mod action configuration |
+
+<Callout type="info">
+For detailed configuration including per-mod actions and advanced usage, see the dedicated [Lunar Client](/lunar-client) page.
+</Callout>
 
 ## Forge Mod Detection (forge.toml)
 

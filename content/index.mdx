@@ -12,10 +12,13 @@ HackedServer is a multi-platform Minecraft plugin that detects Forge mods, Fabri
 
 - **Minecraft Server**: 1.18 or newer ([Paper](https://mcserverjars.com/paper), [Spigot](https://mcserverjars.com/spigot), or similar)
 - **Java**: 17 or newer
-- **ProtocolLib**: Required for Spigot/Paper servers
 - **PacketEvents**: Required for Velocity proxy
 
 Download server software from [MCServerJars.com](https://mcserverjars.com).
+
+<Callout type="info">
+ProtocolLib is automatically downloaded at runtime for Spigot/Paper servers — no manual installation required.
+</Callout>
 
 <Callout type="info">
 HackedServer 3.x is a complete rewrite with simplified installation — no external dependencies like HackedCore are required anymore.
@@ -28,9 +31,10 @@ HackedServer 3.x is a complete rewrite with simplified installation — no exter
 
 ### Installing on Spigot/Paper
 
-1. Download and install [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/) to your `/plugins/` folder
-2. Download `HackedServer.jar` and place it in your `/plugins/` folder
-3. Restart your server
+1. Download `HackedServer.jar` and place it in your `/plugins/` folder
+2. Restart your server
+
+ProtocolLib will be automatically downloaded on first startup.
 
 <Callout type="info">
 HackedServer has been tested with Spigot, CraftBukkit, PaperMC, Purpur, and other popular forks. Download server jars from [MCServerJars.com](https://mcserverjars.com).

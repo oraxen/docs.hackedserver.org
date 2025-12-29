@@ -1,0 +1,106 @@
+---
+description: Detect Lunar Client mods with versions and configure per-mod actions
+---
+
+import { Callout } from 'nextra/components'
+
+# Lunar Client Integration
+
+HackedServer 3.12.1 adds native Lunar Client support, allowing you to:
+
+- **See all installed mods** with their versions
+- **Detect Fabric/Forge mods** loaded via Lunar
+- **Configure per-mod actions** (kick specific mods, allow others)
+
+## Configuration (lunar.toml)
+
+```toml
+# Track Lunar Client usage
+mark_lunar_client = true
+
+# Track Fabric/Forge mods loaded via Lunar
+mark_fabric = true
+mark_forge = true
+
+# Actions when Lunar Client is detected
+actions = ["alert"]
+
+# Per-mod actions
+[mod_actions]
+# "freelook" = ["kick"]
+# "sodium" = ["silent_log"]
+```
+
+### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `mark_lunar_client` | boolean | `true` | Track Lunar Client usage |
+| `mark_fabric` | boolean | `true` | Track Fabric mods via Lunar |
+| `mark_forge` | boolean | `true` | Track Forge mods via Lunar |
+| `actions` | array | `["alert"]` | Actions on Lunar detection |
+| `mod_actions` | table | `{}` | Per-mod action configuration |
+
+## Per-Mod Actions
+
+Configure specific actions for individual mods:
+
+```toml
+[mod_actions]
+# Kick players using these mods
+"freelook" = ["kick"]
+"autoclick" = ["ban"]
+
+# Silent logging for allowed mods
+"optifine" = ["silent_log"]
+"sodium" = ["silent_log"]
+
+# Multiple actions
+"xray" = ["alert", "kick", "log_to_discord"]
+```
+
+<Callout type="info">
+Use `/hs check <player>` to see exact mod names as reported by Lunar Client.
+</Callout>
+
+## Checking Player Mods
+
+The `/hs check` command shows detailed Lunar mod information:
+
+```
+/hs check PlayerName
+
+Detected mods:
+- Lunar Client
+- sodium (v0.5.3) [fabric]
+- iris (v1.6.4) [fabric]
+- litematica (v0.12.0) [fabric]
+```
+
+## Example Configurations
+
+### Alert Staff, Kick Specific Mods
+
+```toml
+mark_lunar_client = true
+mark_fabric = true
+mark_forge = true
+actions = ["alert"]
+
+[mod_actions]
+"freelook" = ["kick"]
+"schematica" = ["kick"]
+"worlddownloader" = ["kick", "alert"]
+```
+
+### Silent Logging Only
+
+```toml
+mark_lunar_client = true
+mark_fabric = true
+mark_forge = true
+actions = ["silent_log"]
+
+[mod_actions]
+```
+

@@ -1,103 +1,49 @@
 ---
-description: Deep integration with Lunar Client via Apollo protocol for mod detection
+description: Detect Lunar Client mods with versions and configure per-mod actions
 ---
 
-import { Callout, Tabs } from 'nextra/components'
+import { Callout } from 'nextra/components'
 
 # Lunar Client Integration
 
-HackedServer 3.12.1 introduces native Lunar Client integration via the Apollo protocol. This allows deep inspection of Lunar Client players, including detection of their installed mods, Fabric/Forge compatibility layers, and individual mod versions.
+HackedServer 3.12.1 adds native Lunar Client support, allowing you to:
 
-## Overview
-
-Unlike generic brand detection which only identifies that a player is using Lunar Client, the Apollo integration provides:
-
-- **Complete mod list** - See all mods installed via Lunar Client
-- **Mod versions** - Know exactly which version of each mod is running
-- **Mod types** - Distinguish between built-in Lunar mods and external mods
-- **Fabric/Forge detection** - Detect when players use Lunar with Fabric or Forge mods
-- **Per-mod actions** - Configure different responses for specific mods
-
-## How It Works
-
-Lunar Client uses the Apollo protocol to communicate with servers via the `lunar:apollo` plugin message channel. HackedServer intercepts and parses these protobuf-encoded handshakes to extract detailed mod information.
-
-The detection happens automatically when a Lunar Client player joins:
-
-1. Player connects with Lunar Client
-2. Lunar sends an Apollo handshake on the `lunar:apollo` channel
-3. HackedServer parses the protobuf data to extract mod information
-4. Configured actions are triggered based on your settings
-
-<Callout type="info">
-Detection works on all platforms: Spigot/Paper, BungeeCord, and Velocity. The `lunar:apollo` channel is automatically registered on plugin enable.
-</Callout>
+- **See all installed mods** with their versions
+- **Detect Fabric/Forge mods** loaded via Lunar
+- **Configure per-mod actions** (kick specific mods, allow others)
 
 ## Configuration (lunar.toml)
 
-After running HackedServer 3.12.1 for the first time, a `lunar.toml` configuration file is generated:
-
 ```toml
-# Mark players using Lunar Client
+# Track Lunar Client usage
 mark_lunar_client = true
 
-# Mark players using Fabric mods via Lunar
+# Track Fabric/Forge mods loaded via Lunar
 mark_fabric = true
-
-# Mark players using Forge mods via Lunar
 mark_forge = true
 
-# Actions to execute when Lunar Client is first detected
+# Actions when Lunar Client is detected
 actions = ["alert"]
 
-# Per-mod actions - configure specific actions for individual mods
+# Per-mod actions
 [mod_actions]
-# Example: Alert for specific mods
-# "sodium" = ["alert"]
-# "litematica" = ["kick"]
+# "freelook" = ["kick"]
+# "sodium" = ["silent_log"]
 ```
 
-### Configuration Options
+### Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `mark_lunar_client` | boolean | `true` | Track and display Lunar Client usage |
-| `mark_fabric` | boolean | `true` | Track Fabric mods loaded via Lunar |
-| `mark_forge` | boolean | `true` | Track Forge mods loaded via Lunar |
-| `actions` | array | `["alert"]` | Actions triggered on Lunar Client detection |
+| `mark_lunar_client` | boolean | `true` | Track Lunar Client usage |
+| `mark_fabric` | boolean | `true` | Track Fabric mods via Lunar |
+| `mark_forge` | boolean | `true` | Track Forge mods via Lunar |
+| `actions` | array | `["alert"]` | Actions on Lunar detection |
 | `mod_actions` | table | `{}` | Per-mod action configuration |
 
-### Detection Toggles
+## Per-Mod Actions
 
-The three detection toggles control what information is tracked:
-
-- **`mark_lunar_client`** - When enabled, tracks that a player is using Lunar Client itself
-- **`mark_fabric`** - When enabled, detects and tracks Fabric mods loaded alongside Lunar
-- **`mark_forge`** - When enabled, detects and tracks Forge mods loaded alongside Lunar
-
-<Callout type="info">
-Disabling a detection toggle only prevents tracking - the plugin will still parse the Apollo handshake to check for per-mod actions.
-</Callout>
-
-### Global Actions
-
-The `actions` array defines what happens when Lunar Client is first detected for a player. These actions use the same action IDs defined in `actions.toml`:
-
-```toml
-# Just alert staff
-actions = ["alert"]
-
-# Alert and run additional actions
-actions = ["alert", "log_lunar"]
-```
-
-### Per-Mod Actions
-
-The `mod_actions` table allows configuring specific actions for individual mods. This is useful for:
-
-- Banning specific cheat mods
-- Allowing cosmetic mods silently
-- Logging usage of particular mods
+Configure specific actions for individual mods:
 
 ```toml
 [mod_actions]
@@ -113,13 +59,13 @@ The `mod_actions` table allows configuring specific actions for individual mods.
 "xray" = ["alert", "kick", "log_to_discord"]
 ```
 
-<Callout type="warning">
-Mod names in `mod_actions` should match the mod IDs as reported by Lunar Client. Use the `/hs check` command or debug mode to see exact mod names.
+<Callout type="info">
+Use `/hs check <player>` to see exact mod names as reported by Lunar Client.
 </Callout>
 
 ## Checking Player Mods
 
-The `/hs check <player>` command now displays detailed Lunar Client information:
+The `/hs check` command shows detailed Lunar mod information:
 
 ```
 /hs check PlayerName
@@ -131,34 +77,9 @@ Detected mods:
 - litematica (v0.12.0) [fabric]
 ```
 
-The output shows:
-- The Lunar Client detection
-- Each detected mod with its version
-- The mod type (fabric, forge, or built-in)
-
-## Action Timing
-
-Actions can trigger at two points:
-
-1. **First Detection** - When Lunar/Fabric/Forge is first detected
-2. **Mod Detection** - When a specific mod is first seen
-
-If a player hasn't fully connected when detection occurs (e.g., during the login process), actions are queued and executed after the player fully joins. This ensures kick/ban commands work correctly.
-
 ## Example Configurations
 
-### Allow All Lunar Client Users
-
-```toml
-mark_lunar_client = true
-mark_fabric = true
-mark_forge = true
-actions = ["silent_log"]
-
-[mod_actions]
-```
-
-### Alert Staff for Lunar, Kick for Specific Mods
+### Alert Staff, Kick Specific Mods
 
 ```toml
 mark_lunar_client = true
@@ -172,73 +93,14 @@ actions = ["alert"]
 "worlddownloader" = ["kick", "alert"]
 ```
 
-### Strict Policy - No External Mods
+### Silent Logging Only
 
 ```toml
 mark_lunar_client = true
-mark_fabric = false
-mark_forge = false
-actions = ["alert"]
+mark_fabric = true
+mark_forge = true
+actions = ["silent_log"]
 
-# If you detect Fabric/Forge through Lunar, kick
 [mod_actions]
 ```
-
-Then in your `generic.toml`, add a check for Fabric/Forge via Lunar to kick those players.
-
-## Combining with Generic Checks
-
-The Lunar integration works alongside existing generic checks in `generic.toml`. You can still use brand-based detection for a simple "Lunar Client detected" alert:
-
-```toml
-# generic.toml - basic brand detection (still works)
-[lunar_client]
-actions = ["alert"]
-channels = ["minecraft:brand", "MC|Brand"]
-message_has = "lunarclient"
-name = "Lunar Client"
-```
-
-However, for detailed mod information, the Apollo integration via `lunar.toml` is recommended as it provides much more detail.
-
-<Callout type="info">
-Both detection methods can run simultaneously. Use generic checks for a quick alert and the Apollo integration for detailed mod tracking.
-</Callout>
-
-## Platform Support
-
-| Platform | Lunar Detection | Mod List | Per-Mod Actions |
-|----------|-----------------|----------|-----------------|
-| Spigot/Paper | Yes | Yes | Yes |
-| BungeeCord | Yes | Yes | Yes |
-| Velocity | Yes | Yes | Yes |
-
-The Apollo integration is fully supported on all platforms with identical functionality.
-
-## Troubleshooting
-
-### Mods Not Detected
-
-1. Ensure `lunar.toml` exists and is properly formatted
-2. Check that detection toggles are enabled
-3. Verify the player is actually using Lunar Client (not a lookalike brand)
-4. Use debug mode to see raw Apollo payloads
-
-### Actions Not Triggering
-
-1. Verify actions are defined in `actions.toml`
-2. Check mod names match exactly (case-sensitive)
-3. Ensure `action_delay_ticks` in `config.toml` isn't too low
-4. Check console for error messages
-
-### Debug Mode
-
-Enable debug mode in `config.toml` to see Apollo handshake data:
-
-```toml
-[settings]
-debug = true
-```
-
-This will log all `lunar:apollo` messages, helping you identify mod names and troubleshoot detection issues.
 

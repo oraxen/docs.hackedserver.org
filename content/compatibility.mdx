@@ -100,24 +100,23 @@ Fabric clients are detected via the brand channel when they identify as "fabric"
 
 ### Lunar Client Detection
 
-HackedServer 3.12.1+ includes native Lunar Client integration via the Apollo protocol:
+HackedServer 3.12.1+ includes native Lunar Client integration:
 
-- **Apollo Protocol** - Parses `lunar:apollo` handshake (protobuf) for deep mod inspection
-- **Full Mod List** - Retrieves all installed mods with versions and types
-- **Fabric/Forge via Lunar** - Detects when Lunar is used with external mod loaders
+- **Full Mod List** - See all installed mods with versions
+- **Fabric/Forge via Lunar** - Detect external mod loaders
 - **Per-Mod Actions** - Configure specific actions for individual mods
 
-This provides much more detail than simple brand detection. See the [Lunar Client](/lunar-client) page for configuration.
+See the [Lunar Client](/lunar-client) page for configuration.
 
 ### Client Detection
 
 HackedServer detects many popular clients including:
 
-| Client Type | Examples | Detection Method |
-|-------------|----------|------------------|
-| **PvP Clients** | Lunar Client, Badlion Client, Feather Client | Apollo/Brand |
-| **Utility Clients** | LabyMod (all versions), 5zig Mod | Channel/Brand |
-| **Hacked Clients** | Various | Channel detection |
+| Client Type | Examples |
+|-------------|----------|
+| **PvP Clients** | Lunar Client, Badlion Client, Feather Client |
+| **Utility Clients** | LabyMod (all versions), 5zig Mod |
+| **Hacked Clients** | Various (via channel detection) |
 
 ## Cross-Version Support
 

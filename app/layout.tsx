@@ -5,6 +5,7 @@ import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 import "nextra-theme-docs/style.css";
 import "./globals.css";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 // Custom logo wrapper that opens external links in new tab
 function LogoWithExternalIcon() {
@@ -106,6 +107,7 @@ export default async function RootLayout({
       : pageMap;
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
+      <GoogleAnalytics />
       <Head>
         {/* Theme color for browser chrome - matches brand blue */}
         <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />

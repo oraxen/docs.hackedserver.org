@@ -1,0 +1,227 @@
+---
+description: Detect Forge and NeoForge mods via channel namespaces and configure per-mod actions
+---
+
+import { Callout } from 'nextra/components'
+
+# Forge/NeoForge Integration
+
+HackedServer 3.13.0 adds native Forge and NeoForge mod detection, allowing you to:
+
+- **Detect Forge/NeoForge clients** and extract their installed mods
+- **Configure per-mod actions** (kick specific mods, allow others)
+- **Categorize mods** as whitelisted or blacklisted with color-coded display
+
+## How Detection Works
+
+HackedServer uses a fake Forge handshake to retrieve the complete mod list from Forge and NeoForge clients. When a modded client connects, the server requests the mod list and extracts the installed mods.
+
+<Callout type="info">
+Built-in namespaces (`minecraft`, `forge`, `neoforge`, `fml`, `c`) are automatically filtered out from the mod list.
+</Callout>
+
+## Configuration (forge.toml)
+
+```toml
+# Enable Forge/NeoForge mod detection
+enabled = true
+
+[settings]
+# Mark generic checks when Forge client is detected
+mark_forge = true
+
+# Mark generic checks when NeoForge client is detected
+mark_neoforge = true
+
+# Include Forge mod list in /hackedserver check output
+show_mods_in_check = true
+
+# Show mod versions alongside names (when available)
+show_mod_versions = false
+
+[actions]
+# Actions when Forge client is detected
+forge = []
+
+# Actions when NeoForge client is detected
+neoforge = []
+
+[mod_actions]
+# Per-mod actions (keys are mod IDs from channel namespaces)
+# forgewurst = ["alert", "kick"]
+# forgehax = ["alert", "kick"]
+
+[category.whitelisted]
+color = "<green>"
+mods = [
+    "betterfoliage",
+    "sodium",
+    "iris",
+    "optifine",
+    "rubidium",
+    "oculus",
+    "embeddium"
+]
+
+[category.blacklisted]
+color = "<red>"
+mods = [
+    "forgewurst",
+    "forgehax",
+    "wurst",
+    "baritone",
+    "meteor",
+    "aristois",
+    "impact"
+]
+```
+
+### Settings
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable Forge/NeoForge detection |
+| `mark_forge` | boolean | `true` | Mark players using Forge |
+| `mark_neoforge` | boolean | `true` | Mark players using NeoForge |
+| `show_mods_in_check` | boolean | `true` | Show mod list in `/hs check` output |
+| `show_mod_versions` | boolean | `false` | Display mod versions when available |
+
+### Actions
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `actions.forge` | array | `[]` | Actions when Forge is detected |
+| `actions.neoforge` | array | `[]` | Actions when NeoForge is detected |
+| `mod_actions` | table | `{}` | Per-mod action configuration |
+
+## Per-Mod Actions
+
+Configure specific actions for individual mods:
+
+```toml
+[mod_actions]
+# Kick players using cheat mods
+"forgewurst" = ["alert", "kick"]
+"forgehax" = ["alert", "kick"]
+"wurst" = ["alert", "kick"]
+
+# Alert staff but allow these mods
+"baritone" = ["alert"]
+
+# Silent logging for performance mods
+"sodium" = ["silent_log"]
+"optifine" = ["silent_log"]
+```
+
+<Callout type="info">
+Mod IDs are case-insensitive. Use `/hs check <player>` to see exact mod IDs as detected from channel namespaces.
+</Callout>
+
+## Mod Categories
+
+Categorize mods to display them with different colors in the `/hs check` output:
+
+```toml
+[category.whitelisted]
+color = "<green>"
+mods = ["sodium", "iris", "optifine", "rubidium"]
+
+[category.blacklisted]
+color = "<red>"
+mods = ["forgewurst", "forgehax", "wurst", "baritone"]
+```
+
+| Category | Default Color | Purpose |
+|----------|---------------|---------|
+| `whitelisted` | Green | Safe mods (shown but typically no action) |
+| `blacklisted` | Red | Cheat mods (typically trigger actions) |
+
+## Checking Player Mods
+
+The `/hs check` command shows detected Forge/NeoForge mods:
+
+```
+/hs check PlayerName
+
+Detected mods:
+- Forge
+- sodium
+- iris
+- forgewurst
+```
+
+Mods are color-coded based on their category (green for whitelisted, red for blacklisted).
+
+## Example Configurations
+
+### Kick Cheat Mods, Allow Performance Mods
+
+```toml
+enabled = true
+
+[settings]
+mark_forge = true
+mark_neoforge = true
+show_mods_in_check = true
+
+[actions]
+forge = ["alert"]
+neoforge = ["alert"]
+
+[mod_actions]
+"forgewurst" = ["alert", "kick"]
+"forgehax" = ["alert", "kick"]
+"wurst" = ["alert", "kick"]
+"baritone" = ["alert", "kick"]
+
+[category.whitelisted]
+color = "<green>"
+mods = ["sodium", "iris", "optifine", "rubidium", "oculus", "embeddium"]
+
+[category.blacklisted]
+color = "<red>"
+mods = ["forgewurst", "forgehax", "wurst", "baritone", "meteor", "aristois", "impact"]
+```
+
+### Silent Logging Only
+
+```toml
+enabled = true
+
+[settings]
+mark_forge = true
+mark_neoforge = true
+show_mods_in_check = true
+
+[actions]
+forge = ["silent_log"]
+neoforge = ["silent_log"]
+
+[mod_actions]
+```
+
+### Alert on All Forge Clients
+
+```toml
+enabled = true
+
+[settings]
+mark_forge = true
+mark_neoforge = true
+show_mods_in_check = true
+
+[actions]
+forge = ["alert"]
+neoforge = ["alert"]
+
+[mod_actions]
+
+[category.whitelisted]
+color = "<green>"
+mods = []
+
+[category.blacklisted]
+color = "<red>"
+mods = []
+```
+

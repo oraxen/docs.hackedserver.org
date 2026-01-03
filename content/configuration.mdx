@@ -16,6 +16,7 @@ HackedServer uses TOML configuration files for all settings. After the first lau
 | `actions.toml` | Define what happens when clients are detected |
 | `generic.toml` | Configure client/mod detection rules |
 | `lunar.toml` | Lunar Client Apollo integration settings |
+| `forge.toml` | Forge/NeoForge mod detection settings |
 | `languages/english.toml` | Customizable messages |
 
 ## Main Configuration (config.toml)
@@ -222,45 +223,50 @@ actions = ["alert"]
 For detailed configuration including per-mod actions and advanced usage, see the dedicated [Lunar Client](/lunar-client) page.
 </Callout>
 
-## Forge Mod Detection (forge.toml)
+## Forge/NeoForge Mod Detection (forge.toml)
 
-HackedServer can send a fake Forge handshake to retrieve the complete mod list from Forge clients.
+HackedServer 3.13.0 detects Forge and NeoForge mods using a fake Forge handshake.
 
 ```toml
-# Enable forge mod list detection
+# Enable Forge/NeoForge mod detection
 enabled = true
 
-[category]
+[settings]
+mark_forge = true
+mark_neoforge = true
+show_mods_in_check = true
+show_mod_versions = false
+
+[actions]
+forge = []
+neoforge = []
+
+[mod_actions]
+# "forgewurst" = ["alert", "kick"]
 
 [category.whitelisted]
 color = "<green>"
-mods = [
-    "FML",
-    "FORGE",
-    "MCP",
-    "MINECRAFT",
-    "MERCURIUS_UPDATER",
-    "BETTERFOLIAGE"
-]
+mods = ["betterfoliage", "sodium", "iris", "optifine"]
 
 [category.blacklisted]
 color = "<red>"
-mods = [
-    "FORGEWURST",
-    "FORGEHAX",
-    "WURST"
-]
+mods = ["forgewurst", "forgehax", "wurst", "baritone"]
 ```
 
-### Mod Categories
+### Forge Configuration Options
 
-| Category | Color | Purpose |
-|----------|-------|---------|
-| `whitelisted` | Green | Allowed mods (shown but no action) |
-| `blacklisted` | Red | Banned mods (trigger actions) |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable Forge/NeoForge detection |
+| `mark_forge` | boolean | `true` | Mark players using Forge |
+| `mark_neoforge` | boolean | `true` | Mark players using NeoForge |
+| `show_mods_in_check` | boolean | `true` | Show mod list in `/hs check` output |
+| `actions.forge` | array | `[]` | Actions when Forge is detected |
+| `actions.neoforge` | array | `[]` | Actions when NeoForge is detected |
+| `mod_actions` | table | `{}` | Per-mod action configuration |
 
-<Callout type="warning">
-Forge mod detection works by emulating the Forge handshake protocol. This only works with Forge clients that properly implement the handshake.
+<Callout type="info">
+For detailed configuration including per-mod actions and example setups, see the dedicated [Forge/NeoForge](/forge-neoforge) page.
 </Callout>
 
 ## Language Files (languages/*.toml)

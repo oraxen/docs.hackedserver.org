@@ -22,7 +22,7 @@ HackedServer 3.x requires Minecraft 1.18 or newer. For older versions (1.8-1.17)
 
 ## Platform Support
 
-<Tabs items={['Spigot/Paper', 'BungeeCord', 'Velocity']}>
+<Tabs items={['Spigot/Paper', 'Hybrid Servers', 'BungeeCord', 'Velocity']}>
 <Tabs.Tab>
 
 ### Spigot and Paper
@@ -40,6 +40,30 @@ HackedServer works on all Spigot-based servers running 1.18+:
 **Optional Dependencies:**
 - [ViaVersion](https://www.spigotmc.org/resources/viaversion.19254/) - For multi-version support
 - [ProtocolSupport](https://www.spigotmc.org/resources/protocolsupport.7201/) - For legacy client support
+
+</Tabs.Tab>
+<Tabs.Tab>
+
+### Hybrid Servers (Forge + Bukkit)
+
+HackedServer 3.14.0 adds support for hybrid servers that combine Forge/NeoForge with Bukkit:
+
+- **Arclight** - Fully supported
+- **Mohist** - Fully supported
+- **CatServer** - Fully supported
+- **Magma** - Fully supported
+
+<Callout type="info">
+Hybrid servers are automatically detected. HackedServer uses [PacketEvents](https://github.com/retrooper/packetevents) instead of ProtocolLib on these platforms for enhanced compatibility.
+</Callout>
+
+**Dependencies:**
+- [PacketEvents](https://github.com/retrooper/packetevents) - Used automatically on hybrid servers (install manually if not auto-downloaded)
+
+**Installation Notes:**
+- Install HackedServer as you would on a standard Spigot server
+- The plugin automatically detects hybrid server environments
+- PacketEvents provides better compatibility with Forge-based server modifications
 
 </Tabs.Tab>
 <Tabs.Tab>

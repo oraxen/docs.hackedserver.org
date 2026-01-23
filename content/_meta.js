@@ -4,6 +4,7 @@ export default {
   configuration: "Configuration",
   "lunar-client": "Lunar Client",
   "forge-neoforge": "Forge/NeoForge",
+  bedrock: "Bedrock Detection",
   "add-your-own-checks": "Add Your Own Checks",
   compatibility: "Compatibility"
 }

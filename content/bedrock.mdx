@@ -1,0 +1,142 @@
+---
+description: Detect Bedrock Edition players via Geyser and Floodgate APIs
+---
+
+import { Callout, Tabs } from 'nextra/components'
+
+# Bedrock Detection
+
+HackedServer 3.15.0 adds native Bedrock Edition player detection via Geyser and Floodgate APIs. This allows you to identify players connecting from Bedrock Edition (mobile, console, Windows 10) and take appropriate actions.
+
+## How It Works
+
+Bedrock detection uses the Geyser and Floodgate APIs to identify players connecting from Bedrock Edition. The plugin automatically detects which APIs are available on your server:
+
+- **Geyser** - Translates Bedrock protocol to Java, includes player detection
+- **Floodgate** - Authentication bridge for Bedrock players, provides detection API
+
+<Callout type="info">
+HackedServer automatically detects available APIs. If both Geyser and Floodgate are present, either can be used for detection.
+</Callout>
+
+## Platform Support
+
+Bedrock detection works across all supported platforms:
+
+| Platform | Geyser Support | Floodgate Support |
+|----------|----------------|-------------------|
+| **Spigot/Paper** | Yes | Yes |
+| **BungeeCord** | Yes | Yes |
+| **Velocity** | Yes | Yes |
+
+## Configuration (bedrock.toml)
+
+```toml
+# Bedrock player detection via Geyser/Floodgate API
+# Automatically detects which APIs are available (Geyser, Floodgate, or both)
+# Works on Spigot/Paper, BungeeCord, and Velocity
+enabled = false
+
+# Label used for <name> placeholder in actions
+label = "Bedrock"
+
+# Actions to execute when a Bedrock player is detected
+# Available placeholders: <player>, <name>, <source>
+# <source> will be "Geyser" or "Floodgate" depending on which API detected the player
+# Example: actions = ["alert", "kick"]
+actions = []
+```
+
+### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `false` | Enable Bedrock player detection |
+| `label` | string | `"Bedrock"` | Label shown in alerts (used for `<name>` placeholder) |
+| `actions` | array | `[]` | Actions to execute when a Bedrock player is detected |
+
+### Placeholders
+
+Bedrock detection supports these placeholders in actions:
+
+| Placeholder | Description |
+|-------------|-------------|
+| `<player>` | The player's name |
+| `<name>` | The configured label (default: "Bedrock") |
+| `<source>` | Detection source: "Geyser" or "Floodgate" |
+
+## Example Configurations
+
+### Alert Staff on Bedrock Players
+
+```toml
+enabled = true
+label = "Bedrock"
+actions = ["alert"]
+```
+
+With this action in `actions.toml`:
+
+```toml
+[alert]
+send_alert = "<yellow><player> <gray>joined using <yellow><name><gray> (via <source>)"
+[alert.commands]
+console = []
+player = []
+opped_player = []
+```
+
+### Log and Restrict Bedrock Players
+
+```toml
+enabled = true
+label = "Bedrock Edition"
+actions = ["bedrock_restrict"]
+```
+
+With a custom action:
+
+```toml
+[bedrock_restrict]
+send_alert = "<aqua><player> <gray>is playing on <aqua><name><gray> (detected via <source>)"
+[bedrock_restrict.commands]
+console = ["lp user <player> parent add bedrock"]
+player = []
+opped_player = []
+```
+
+## Alternative: Brand-Based Detection
+
+If you don't have Geyser or Floodgate installed directly on your detection server (e.g., Geyser runs on a separate proxy), you can use brand-based detection via `generic.toml`:
+
+```toml
+[bedrock_geyser]
+actions = ["alert"]
+channels = ["MC|Brand", "minecraft:brand"]
+message_has = "Geyser"
+name = "Bedrock (Geyser)"
+```
+
+<Callout type="warning">
+Brand-based detection only works when Geyser runs on the same server. For Floodgate-only setups or when Geyser runs on a proxy, use the API-based detection in `bedrock.toml`.
+</Callout>
+
+## Troubleshooting
+
+### Detection Not Working
+
+1. **Verify API availability** - Ensure Geyser or Floodgate is installed on the same server as HackedServer
+2. **Check enabled status** - Confirm `enabled = true` in `bedrock.toml`
+3. **Enable debug mode** - Set `debug = true` in `config.toml` to see detection logs
+4. **Reload configuration** - Use `/hs reload` after changes
+
+### Using with Proxies
+
+When running Geyser/Floodgate on a proxy (BungeeCord/Velocity):
+
+- Install HackedServer on the proxy for detection
+- The backend servers won't detect Bedrock players unless they also have Geyser/Floodgate
+
+<Callout type="info">
+For proxy setups, install HackedServer on your proxy where Geyser/Floodgate runs for reliable Bedrock detection.
+</Callout>

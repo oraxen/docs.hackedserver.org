@@ -17,6 +17,7 @@ HackedServer uses TOML configuration files for all settings. After the first lau
 | `generic.toml` | Configure client/mod detection rules |
 | `lunar.toml` | Lunar Client Apollo integration settings |
 | `forge.toml` | Forge/NeoForge mod detection settings |
+| `bedrock.toml` | Bedrock Edition player detection via Geyser/Floodgate |
 | `languages/english.toml` | Customizable messages |
 
 ## Main Configuration (config.toml)
@@ -87,6 +88,7 @@ Use these placeholders in alert messages and commands:
 |-------------|-------------|
 | `<player>` | The player's name |
 | `<name>` | The detected client/mod name |
+| `<source>` | Detection source (e.g., "Geyser" or "Floodgate" for Bedrock detection) |
 
 ### Example: Kick and Alert
 
@@ -267,6 +269,36 @@ mods = ["forgewurst", "forgehax", "wurst", "baritone"]
 
 <Callout type="info">
 For detailed configuration including per-mod actions and example setups, see the dedicated [Forge/NeoForge](/forge-neoforge) page.
+</Callout>
+
+## Bedrock Detection (bedrock.toml)
+
+HackedServer 3.15.0 adds Bedrock Edition player detection via Geyser and Floodgate APIs.
+
+```toml
+# Bedrock player detection via Geyser/Floodgate API
+# Automatically detects which APIs are available
+# Works on Spigot/Paper, BungeeCord, and Velocity
+enabled = false
+
+# Label used for <name> placeholder in actions
+label = "Bedrock"
+
+# Actions to execute when a Bedrock player is detected
+# Available placeholders: <player>, <name>, <source>
+actions = []
+```
+
+### Bedrock Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `false` | Enable Bedrock player detection |
+| `label` | string | `"Bedrock"` | Label for alerts (`<name>` placeholder) |
+| `actions` | array | `[]` | Actions when Bedrock player detected |
+
+<Callout type="info">
+For detailed configuration including proxy setups and alternative detection methods, see the dedicated [Bedrock Detection](/bedrock) page.
 </Callout>
 
 ## Language Files (languages/*.toml)

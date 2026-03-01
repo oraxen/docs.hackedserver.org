@@ -21,6 +21,8 @@ Each check in `generic.toml` follows this structure:
 name = "Display Name"
 channels = ["channel1", "minecraft:channel2"]
 message_has = "optional_filter"
+message_not_has = "optional_exclusion"
+category = "mod"
 actions = ["alert"]
 ```
 
@@ -32,6 +34,8 @@ actions = ["alert"]
 | `name` | Yes | Name displayed in alerts and commands |
 | `channels` | Yes | List of plugin message channels to monitor |
 | `message_has` | No | Only trigger if message contains this text (case-insensitive) |
+| `message_not_has` | No | Exclude if message contains this text (case-insensitive) |
+| `category` | No | Grouping for display in `/hs inv`: `"loader"`, `"client"`, `"mod"`, or `"other"` (default) |
 | `actions` | Yes | List of action IDs from `actions.toml` to execute |
 
 ## Example: Detecting a Custom Client
@@ -56,6 +60,31 @@ channels = ["example:main"]
 message_has = "client_hello"
 actions = ["alert"]
 ```
+
+### With Exclusion Filtering
+
+If two checks share the same channel and overlapping content, use `message_not_has` to prevent false positives:
+
+```toml
+[forge]
+name = "Forge"
+channels = ["MC|Brand", "minecraft:brand"]
+message_has = "forge"
+message_not_has = "neoforge"
+category = "loader"
+actions = ["alert"]
+
+[neoforge]
+name = "NeoForge"
+channels = ["MC|Brand", "minecraft:brand"]
+message_has = "neoforge"
+category = "loader"
+actions = ["alert"]
+```
+
+<Callout type="info">
+Without `message_not_has`, a NeoForge client would trigger both the `forge` and `neoforge` checks since "neoforge" contains "forge".
+</Callout>
 
 ## Example: Detecting via MC|Brand
 
@@ -234,9 +263,11 @@ actions = ["unapproved_mod"]
 
 1. **Use specific channel names** when possible for accurate detection
 2. **Use `message_has` filters** to avoid false positives on shared channels
-3. **Test with debug mode** to verify your checks work correctly
-4. **Start with `alert` action** before adding punishment actions
-5. **Document your custom checks** with comments in the TOML file
+3. **Use `message_not_has`** when two checks share overlapping content on the same channel
+4. **Set a `category`** so checks are grouped correctly in the `/hs inv` GUI (`"loader"`, `"client"`, `"mod"`, or `"other"`)
+5. **Test with debug mode** to verify your checks work correctly
+6. **Start with `alert` action** before adding punishment actions
+7. **Document your custom checks** with comments in the TOML file
 
 <Callout type="info">
 For more detailed examples and community-contributed checks, check the [HackedServer GitHub repository](https://github.com/Th0rgal/HackedServer).

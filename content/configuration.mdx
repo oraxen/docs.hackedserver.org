@@ -120,12 +120,15 @@ enabled = true
 actions = ["alert"]
 channels = ["labymod3:main"]
 name = "Labymod v3"
+category = "client"
 
 [forge]
 actions = ["alert"]
 channels = ["MC|Brand", "minecraft:brand"]
 message_has = "forge"
+message_not_has = "neoforge"
 name = "Forge"
+category = "loader"
 ```
 
 ### Check Properties
@@ -134,8 +137,14 @@ name = "Forge"
 |----------|------|----------|-------------|
 | `name` | string | Yes | Display name shown in alerts |
 | `channels` | array | Yes | Plugin message channels to monitor |
-| `message_has` | string | No | Only trigger if message contains this text |
+| `message_has` | string | No | Only trigger if message contains this text (case-insensitive) |
+| `message_not_has` | string | No | Exclude if message contains this text (case-insensitive) |
+| `category` | string | No | Grouping for display: `"loader"`, `"client"`, `"mod"`, or `"other"` (default) |
 | `actions` | array | Yes | List of action IDs to execute |
+
+<Callout type="info">
+The `message_not_has` property is useful when two checks share the same channel and overlapping `message_has` values. For example, `forge` uses `message_not_has = "neoforge"` to avoid matching NeoForge clients.
+</Callout>
 
 ### Pre-configured Checks
 
@@ -166,6 +175,7 @@ HackedServer comes with detection for many popular clients and mods:
 
 **Mod Loaders:**
 - Forge (detected via brand)
+- NeoForge (detected via brand)
 - Fabric (detected via brand)
 - LiteLoader
 - Legacy Forge Mod Loader

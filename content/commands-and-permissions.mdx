@@ -19,10 +19,10 @@ HackedServer provides a simple command interface available on all platforms. The
 | `/hs reload` | Reload all configuration files | `hackedserver.command.reload` |
 | `/hs check <player>` | Check detected clients and mods for a player | `hackedserver.command.check` |
 | `/hs list` | List all players with detected mods | `hackedserver.command.list` |
-| `/hs inv` | Open the HackedServer inventory GUI | `hackedserver.command.inv` |
+| `/hs inv` | Open the paginated HackedServer inventory GUI | `hackedserver.command.inv` |
 
 <Callout type="info">
-The `/hs inv` command is only available on Spigot/Paper servers, not on BungeeCord or Velocity proxies.
+The `/hs inv` command is only available on Spigot/Paper servers, not on BungeeCord or Velocity proxies. The GUI shows all tracked players as heads with loader status (✓/✗) and detected mods (⚠). When there are more than 45 players, arrow navigation appears at the bottom row.
 </Callout>
 
 ### Enhanced /hs check Command
@@ -72,6 +72,12 @@ Staff members with the `hackedserver.alert` permission will receive in-game noti
 <Tabs.Tab>
 
 On Spigot and Paper servers, all commands are available including the inventory GUI (`/hs inv`).
+
+The `/hs inv` GUI displays a paginated grid of player heads (45 per page) sorted alphabetically. Each head shows:
+- **Loaders**: ✓ detected / ✗ not detected for each loader (Fabric, Forge, NeoForge, etc.)
+- **Mods/Clients**: ⚠ warnings for any detected non-loader checks
+
+Use the arrow buttons in the bottom row to navigate between pages.
 
 Commands use the modern CommandAPI for tab completion and argument suggestions.
 

@@ -118,6 +118,10 @@ HackedServer can detect Forge clients and retrieve their mod lists. Detection wo
 Forge 1.13 had incomplete handshake support. Detection may be limited for this specific version.
 </Callout>
 
+### NeoForge Detection
+
+NeoForge clients are detected via the brand channel when they identify as "neoforge". HackedServer distinguishes NeoForge from Forge using exclusion filtering — a NeoForge brand string won't falsely trigger the Forge check.
+
 ### Fabric Detection
 
 Fabric clients are detected via the brand channel when they identify as "fabric".
